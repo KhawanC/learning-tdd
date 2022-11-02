@@ -43,7 +43,12 @@ public class CourseController {
 	public ResponseEntity<CourseDTO> saveCourse(@RequestBody CourseForm form) {
 		return new ResponseEntity<>(service.save(form), HttpStatus.OK);
 	}
-
+	
+	@PostMapping("/kafka")
+	public ResponseEntity<CourseForm> saveCourseByKafka(@RequestBody CourseForm form) throws Exception {
+		return new ResponseEntity<>(service.saveByKafka(form), HttpStatus.OK);
+	}
+ 
 	@DeleteMapping("/id/{id}")
 	public ResponseEntity<CourseDTO> deleteCourse(@RequestParam Long id) {
 		return new ResponseEntity<>(service.delete(id), HttpStatus.OK);

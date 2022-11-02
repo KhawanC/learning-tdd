@@ -44,6 +44,11 @@ public class StudentController {
 		return new ResponseEntity<>(service.save(form), HttpStatus.OK);
 	}
 	
+	@PostMapping("/kafka")
+	public ResponseEntity<StudentForm> saveStudentByKafka(@RequestBody StudentForm form) throws Exception {
+		return new ResponseEntity<>(service.saveByKafka(form), HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/id/{id}")
 	public ResponseEntity<StudentDTO> deleteCourse(@RequestParam Long id) {
 		return new ResponseEntity<>(service.delete(id), HttpStatus.OK);

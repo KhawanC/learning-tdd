@@ -13,6 +13,7 @@ import com.kaua.tests.dto.CourseDTO;
 import com.kaua.tests.forms.CourseForm;
 import com.kaua.tests.models.Course;
 import com.kaua.tests.repositories.CourseRepository;
+import com.kaua.tests.stream.CoursePublisher;
 
 @Service
 public class CourseService {
@@ -22,6 +23,9 @@ public class CourseService {
 
 	@Autowired
 	CourseRepository repository;
+
+	@Autowired
+	CoursePublisher publisher;
 
 	public List<CourseDTO> findAll() {
 		CourseDTO dto = new CourseDTO();
@@ -55,6 +59,12 @@ public class CourseService {
 		Course newCourse = repository.save(course);
 
 		return converter.ModelToDTO(newCourse, dto);
+	}
+
+	public CourseForm saveByKafka(CourseForm form) throws Exception {
+		publisher.saveCourse(form);
+
+		return form;
 	}
 
 	public CourseDTO delete(Long id) {

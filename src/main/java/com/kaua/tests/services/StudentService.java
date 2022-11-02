@@ -12,6 +12,7 @@ import com.kaua.tests.dto.StudentDTO;
 import com.kaua.tests.forms.StudentForm;
 import com.kaua.tests.models.Student;
 import com.kaua.tests.repositories.StudentRepository;
+import com.kaua.tests.stream.StudentPublisher;
 
 @Service
 public class StudentService {
@@ -21,6 +22,9 @@ public class StudentService {
 
 	@Autowired
 	StudentRepository repository;
+
+	@Autowired
+	StudentPublisher publisher;
 
 	public List<StudentDTO> findAll() {
 		StudentDTO dto = new StudentDTO();
@@ -32,7 +36,7 @@ public class StudentService {
 
 	public StudentDTO findById(Long id) throws NoSuchElementException {
 		StudentDTO dto = new StudentDTO();
-		
+
 		Student student = repository.findById(id).orElseThrow(
 				() -> new NoSuchElementException("It wasn't possible to found the student with the id " + id));
 		return converter.ModelToDTO(student, dto);
@@ -40,20 +44,26 @@ public class StudentService {
 
 	public StudentDTO findByName(String name) throws NoSuchElementException {
 		StudentDTO dto = new StudentDTO();
-		
+
 		Student student = repository.findByName(name).orElseThrow(
 				() -> new NoSuchElementException("It wasn't possible to found the student with the name " + name));
-		
+
 		return converter.ModelToDTO(student, dto);
 	}
 
 	public StudentDTO save(StudentForm form) {
 		StudentDTO dto = new StudentDTO();
-		
+
 		Student student = converter.FormToModel(form);
 		Student newCourse = repository.save(student);
 
 		return converter.ModelToDTO(newCourse, dto);
+	}
+
+	public StudentForm saveByKafka(StudentForm form) throws Exception {
+		publisher.saveStudent(form);
+
+		return form;
 	}
 
 	public StudentDTO delete(Long id) {
